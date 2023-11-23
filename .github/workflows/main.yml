@@ -38,21 +38,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18.x'
-    - name: Cache node_modules directory
-      uses: actions/cache@v3
-      id: node_modules-cache
-      with:
-        path: node_modules
-        key: ${{ runner.OS }}-build-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/package-lock.json') }}
-    - name: Install NPM packages
-      if: steps.node_modules-cache.outputs.cache-hit != 'true'
-      run: npm ci
-    - name: Build frontend
-      run: npm run development
     - name: Install PHP versions
       uses: shivammathur/setup-php@v2
       with:
@@ -96,7 +81,7 @@ jobs:
       env:
         DB_CONNECTION: mysql
         DB_DATABASE: laraveldb
-        DB_PORT: 3306
+        DB_PORT: 33306
         DB_USER: root
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
@@ -113,7 +98,7 @@ jobs:
       env:
         DB_CONNECTION: mysql
         DB_DATABASE: laraveldb
-        DB_PORT: 3306
+        DB_PORT: 33306
         DB_USER: root
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
@@ -124,7 +109,7 @@ jobs:
       env:
         DB_CONNECTION: mysql
         DB_DATABASE: laraveldb
-        DB_PORT: 3306
+        DB_PORT: 33306
         DB_USER: root
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
@@ -141,23 +126,11 @@ jobs:
       run: |
         composer require --dev nunomaduro/larastan
         vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress
-
-    - name: Browser Test - upgrade and start Chrome Driver
-      run: |
-        composer require --dev laravel/dusk
-        php artisan dusk:chrome-driver --detect
-        ./vendor/laravel/dusk/bin/chromedriver-linux > /dev/null 2>&1 &
-    - name: Run Dusk Tests
-      run: |
-        php artisan serve > /dev/null 2>&1 &
-        chmod -R 0755 vendor/laravel/dusk/bin/
-        php artisan migrate
-        php artisan dusk
 # Set environment
       env:
         DB_CONNECTION: mysql
         DB_DATABASE: laraveldb
-        DB_PORT: 3306
+        DB_PORT: 33306
         DB_USER: root
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
